@@ -20,25 +20,20 @@ export default function Home() {
 
     <div class="hero-card">
 
-      <!-- === CAMPOS NUEVOS === -->
-      <label class="field">
-        <span>ID</span>
-        <input id="home-id" type="text" autocomplete="username">
-      </label>
+      <label>ID</label>
+      <input class="login-input" type="text" id="login-id">
 
-      <label class="field">
-        <span>Contraseña</span>
-        <div class="password-wrapper">
-          <input id="home-password" type="password" autocomplete="current-password">
-          <button type="button" class="password-toggle" id="togglePass">👁</button>
-        </div>
-      </label>
+      <label>Contraseña</label>
+      <div class="password-wrapper">
+        <input class="login-input" type="password" id="login-password">
+        <button type="button" class="password-toggle" id="toggle-pass">👁</button>
+      </div>
 
       <!-- BOTÓN ACCEDER -->
-      <button class="btn primary" id="accessNow">Acceder</button>
+      <button class="home-btn primary" id="accessNow">Acceder</button>
 
       <!-- REGISTRARME -->
-      <a class="btn" href="#/register">Registrarme</a>
+      <a class="home-btn secondary" href="#/register">Registrarme</a>
 
       <!-- OLVIDASTE -->
       <a class="link-invite" href="#/forgot">¿Olvidaste tu contraseña?</a>
@@ -50,13 +45,14 @@ export default function Home() {
     </div>
   `;
 
-  const idInput = el.querySelector('#home-id');
-  const passInput = el.querySelector('#home-password');
-  const toggle = el.querySelector('#togglePass');
+  // --- REFERENCIAS ---
+  const idInput = el.querySelector('#login-id');
+  const passInput = el.querySelector('#login-password');
+  const toggle = el.querySelector('#toggle-pass');
   const btnAccess = el.querySelector('#accessNow');
   const msg = el.querySelector('#msg');
 
-  // Mostrar/ocultar contraseña
+  // --- MOSTRAR / OCULTAR CONTRASEÑA ---
   toggle.addEventListener('click', () => {
     if (passInput.type === 'password') {
       passInput.type = 'text';
@@ -67,7 +63,7 @@ export default function Home() {
     }
   });
 
-  // ACCEDER CON ID Y PASSWORD
+  // --- ACCEDER ---
   btnAccess.addEventListener('click', () => {
     const id = idInput.value.trim();
     const pwd = passInput.value.trim();
