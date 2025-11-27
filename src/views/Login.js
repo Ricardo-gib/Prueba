@@ -1,54 +1,90 @@
-import { signInWithGoogle, handleRedirectResult, auth } from '../lib/firebase.js';
+// src/views/Login.js
+import { loginUser } from '../auth.js';
 
-export default function Login(){
-  const el = document.createElement('section');
-  el.className = 'container';
-  el.innerHTML = `
-    <div style="flex:1;display:grid;place-items:center">
-      <div class="card" style="max-width:520px;width:100%;text-align:center">
-        <h1>Acceso</h1>
-        <p class="muted">Elige tu método de acceso</p>
-        <div class="grid">
-          <button class="btn primary" id="btnGoogle">Acceder con Google</button>
-          <a class="btn" href="#/register">Registrarme con correo</a>
-          <a class="btn" href="#/home?guest=1">Entrar como invitado</a>
-        </div>
-        <p class="muted" id="msg" style="margin-top:8px"></p>
-      </div>
+export default function Login() {
+  const html = `
+  <div class="screen">
+    <div class="app-card auth-card">
+      <h1>Ingresar</h1>
+      <p class="text-muted">Accede con tu ID y contraseña.</p>
+
+      <form id="login-form" class="form-vertical">
+        <label class="field">
+          <span>ID</span>
+          <input type="text" id="login-id" autocomplete="username" required />
+        </label>
+
+        <label class="field">
+          <span>Contraseña</span>
+          <input type="password" id="login-password" autocomplete="current-password" required />
+        </label>
+
+        <button type="submit" class="primary-btn" style="margin-top:16px">
+          Ingresar
+        </button>
+
+        <p id="login-error"
+           class="text-small"
+           style="color:#c0392b;margin-top:8px;display:none"></p>
+      </form>
+
+      <button type="button" class="ghost-btn" id="go-register">
+        Crear una nueva cuenta
+      </button>
+
+      <button type="button" class="link-btn" id="go-home">
+        Volver al inicio
+      </button>
     </div>
+  </div>
   `;
 
-  const btn = el.querySelector('#btnGoogle');
-  const msg = el.querySelector('#msg');
+  function onMount() {
+    const form = document.getElementById('login-form');
+    const errorBox = document.getElementById('login-error');
+    const idInput = document.getElementById('login-id');
+    const passInput = document.getElementById('login-password');
 
-  btn?.addEventListener('click', async () => {
-    try {
-      btn.disabled = true;
-      btn.textContent = 'Abriendo Google…';
-      msg.textContent = 'Redirigiendo a Google…';
-      await signInWithGoogle();
-    } catch (e) {
-      btn.disabled = false;
-      btn.textContent = 'Acceder con Google';
-      msg.textContent = 'No se pudo abrir Google.';
-      console.error('[GoogleSignInError]', e);
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        errorBox.style.display = 'none';
+
+        const id = idInput.value.trim();
+        const pwd = passInput.value;
+
+        if (!id || !pwd) {
+          errorBox.textContent = 'Ingresa tu ID y contraseña.';
+          errorBox.style.display = 'block';
+          return;
+        }
+
+        try {
+          // si es correcto, guarda la sesión (dentro de loginUser) y redirige
+          loginUser(id, pwd);
+          // aquí eliges a dónde ir cuando se loguea (puedes cambiar la ruta)
+          location.hash = '#/abogadolex';
+        } catch (err) {
+          errorBox.textContent = err.message || 'ID o contraseña incorrectos.';
+          errorBox.style.display = 'block';
+        }
+      });
     }
-  });
 
-  handleRedirectResult()
-    .then(() => {
-      if (auth.currentUser) {
-        msg.textContent = '¡Autenticado como ' + (auth.currentUser.email || auth.currentUser.uid) + '!';
+    const goReg = document.getElementById('go-register');
+    if (goReg) {
+      goReg.addEventListener('click', () => {
+        location.hash = '#/register';
+      });
+    }
+
+    const goHome = document.getElementById('go-home');
+    if (goHome) {
+      goHome.addEventListener('click', () => {
         location.hash = '#/home';
-      } else {
-        
-        msg.textContent = '';
-      }
-    })
-    .catch(e => {
-      console.error('[RedirectResultError]', e);
-      msg.textContent = 'Error al regresar de Google.';
-    });
+      });
+    }
+  }
 
-  return el;
+  return { html, onMount };
 }
