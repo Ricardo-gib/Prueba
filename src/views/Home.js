@@ -1,102 +1,92 @@
+// src/views/Home.js
 import { loginUser } from '../auth.js';
 
 export default function Home() {
   const html = `
   <div class="screen">
-    <div class="app-card auth-card">
-      <header class="app-hero" style="margin-bottom:24px;">
-        <div class="avatar large" aria-hidden="true">
-          <img src="assets/icon_1024.png?v=36" alt="Logo LexDigital" />
+    <!-- HERO AZUL -->
+    <section class="welcome-hero">
+      <div class="hero-top">
+        <div class="hero-logo">
+          <img src="assets/icon_1024.png?v=36" alt="Logo LexDigital">
         </div>
-        <h1 class="app-title">
-          Lex<span>Digital</span>
-        </h1>
-        <p class="text-muted">
-          Asesoría legal al instante, confiable y a tu alcance.
-        </p>
-      </header>
+        <div class="hero-text">
+          <h1 class="brand">
+            <span class="brand_lex">Lex</span><span class="brand_accent">Digital</span>
+          </h1>
+          <p class="tagline">
+            Asesoría legal al instante, confiable y a tu alcance.
+          </p>
+        </div>
+      </div>
+    </section>
 
-      <section>
-        <h2 style="margin-bottom:8px;">Identificación</h2>
-        <p class="text-muted" style="margin-bottom:16px;">
-          Ingresa con tu ID y contraseña para acceder a LexDigital.
-        </p>
+    <!-- TARJETA BLANCA DE IDENTIFICACIÓN -->
+    <section class="app-card auth-card" style="margin-top:16px">
+      <h2>Identificación</h2>
+      <p class="text-muted">
+        Ingresa con tu ID y contraseña para acceder a LexDigital.
+      </p>
 
-        <form id="home-login-form" class="form-vertical">
-          <label class="field">
-            <span>ID</span>
-            <input type="text" id="home-login-id" autocomplete="username" required />
-          </label>
+      <form id="home-login-form" class="form-vertical">
+        <label class="field">
+          <span>ID</span>
+          <input type="text" id="home-login-id" autocomplete="username" required />
+        </label>
 
-          <label class="field">
-            <span>Contraseña</span>
-            <div class="password-wrapper">
-              <input
-                type="password"
-                id="home-login-password"
-                autocomplete="current-password"
-                required
-              />
-              <button
-                type="button"
-                class="password-toggle"
-                id="home-password-toggle"
-                aria-label="Mostrar u ocultar contraseña"
-              >👁</button>
-            </div>
-          </label>
+        <label class="field">
+          <span>Contraseña</span>
+          <div class="password-wrapper">
+            <input type="password" id="home-login-password" autocomplete="current-password" required />
+            <button type="button" class="password-toggle" id="home-toggle-password" aria-label="Mostrar u ocultar contraseña">👁</button>
+          </div>
+        </label>
 
-          <label class="field" style="flex-direction:row;align-items:center;gap:8px;">
-            <input type="checkbox" id="home-remember" />
-            <span>Recordar mis datos</span>
-          </label>
+        <label class="field checkbox-field" style="margin-top:4px">
+          <input type="checkbox" id="home-remember" />
+          <span>Recordar mis datos</span>
+        </label>
 
-          <button type="submit" class="primary-btn" style="margin-top:8px;">
-            Acceder
-          </button>
+        <div class="btn-row" style="margin-top:12px; display:flex; gap:8px;">
+          <button type="submit" class="primary-btn" style="flex:1;">Acceder</button>
+          <button type="button" class="ghost-btn" id="home-go-register" style="flex:1;">Registrarme</button>
+        </div>
 
-          <button type="button" class="ghost-btn" id="home-go-register">
-            Registrarme
-          </button>
+        <p id="home-login-error"
+           class="text-small"
+           style="color:#c0392b;margin-top:8px;display:none"></p>
+      </form>
 
-          <button type="button" class="link-btn" id="home-go-guest">
-            Acceder como invitado
-          </button>
-
-          <button type="button" class="link-btn" id="home-forgot-password">
-            ¿Olvidaste tu contraseña?
-          </button>
-
-          <p id="home-login-error"
-             class="text-small"
-             style="color:#c0392b;margin-top:8px;display:none;"></p>
-        </form>
-      </section>
-    </div>
+      <div class="aux-links" style="margin-top:12px; display:flex; flex-direction:column; gap:4px; text-align:center;">
+        <span class="text-small" style="opacity:.8;">¿Olvidaste tu contraseña?</span>
+        <button type="button" class="link-btn" id="home-guest">
+          Acceder como invitado
+        </button>
+      </div>
+    </section>
   </div>
   `;
 
   function onMount() {
     const form = document.getElementById('home-login-form');
-    const errorBox = document.getElementById('home-login-error');
     const idInput = document.getElementById('home-login-id');
     const passInput = document.getElementById('home-login-password');
-    const toggleBtn = document.getElementById('home-password-toggle');
-    const rememberChk = document.getElementById('home-remember');
+    const remember = document.getElementById('home-remember');
+    const errorBox = document.getElementById('home-login-error');
+    const toggleBtn = document.getElementById('home-toggle-password');
 
-    // Cargar ID recordado (si existe)
-    const savedId = localStorage.getItem('lexd_last_id');
+    // Cargar ID guardado (si existe)
+    const savedId = localStorage.getItem('lex_last_id');
     if (savedId) {
       idInput.value = savedId;
-      if (rememberChk) rememberChk.checked = true;
+      remember.checked = true;
     }
 
-    // Ojo de contraseña
-    if (toggleBtn && passInput) {
+    // Ver / ocultar contraseña
+    if (toggleBtn) {
       toggleBtn.addEventListener('click', () => {
-        const isHidden = passInput.type === 'password';
-        passInput.type = isHidden ? 'text' : 'password';
-        toggleBtn.textContent = isHidden ? '🙈' : '👁';
+        const isPwd = passInput.type === 'password';
+        passInput.type = isPwd ? 'text' : 'password';
       });
     }
 
@@ -115,16 +105,15 @@ export default function Home() {
         }
 
         try {
-          loginUser(id, pwd);
-
-          // Guardar / borrar ID según el check
-          if (rememberChk && rememberChk.checked) {
-            localStorage.setItem('lexd_last_id', id);
+          // recuerda ID si el check está activo
+          if (remember.checked) {
+            localStorage.setItem('lex_last_id', id);
           } else {
-            localStorage.removeItem('lexd_last_id');
+            localStorage.removeItem('lex_last_id');
           }
 
-          // Al loguear: ir al menú principal del abogado
+          loginUser(id, pwd);
+          // después de loguear, ir al menú principal del abogado
           location.hash = '#/abogadolex';
         } catch (err) {
           errorBox.textContent = err.message || 'ID o contraseña incorrectos.';
@@ -133,6 +122,7 @@ export default function Home() {
       });
     }
 
+    // Botón "Registrarme"
     const goReg = document.getElementById('home-go-register');
     if (goReg) {
       goReg.addEventListener('click', () => {
@@ -140,21 +130,16 @@ export default function Home() {
       });
     }
 
-    const goGuest = document.getElementById('home-go-guest');
-    if (goGuest) {
-      goGuest.addEventListener('click', () => {
-        // Invitado: entra directo al menú de LexDigital
+    // Botón "Acceder como invitado"
+    const guestBtn = document.getElementById('home-guest');
+    if (guestBtn) {
+      guestBtn.addEventListener('click', () => {
+        // entra directo al módulo sin login
         location.hash = '#/abogadolex';
-      });
-    }
-
-    const forgotBtn = document.getElementById('home-forgot-password');
-    if (forgotBtn) {
-      forgotBtn.addEventListener('click', () => {
-        alert('En la versión final se enviará un enlace de recuperación al correo registrado.');
       });
     }
   }
 
   return { html, onMount };
 }
+
