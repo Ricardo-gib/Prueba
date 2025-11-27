@@ -6,149 +6,93 @@ export default function Laura() {
     <div class="app-card full-card">
       <header class="app-hero">
         <div class="avatar large">
-          <img src="assets/abogada_192.png" alt="Dra. Laura Romero">
+          <img src="assets/abogada_192.png" alt="Dra. Laura Anadin">
         </div>
-        <h1 class="app-title">
-          Mi abogada<br>
-          <span>Dra. Laura Romero</span>
-        </h1>
-        <p class="text-link" id="btn-ver-mas">Ver más sobre mí</p>
+        <h1 class="app-title">Mi abogada<br><span>Dra. Laura Anadin</span></h1>
+        <p class="text-link" id="btn-laura-cv">Ver más sobre mí</p>
       </header>
 
       <div class="menu-list">
-        <button class="pill-btn" type="button" id="btn-chat">
-          Chat - S/ 20.00
-        </button>
-        <button class="pill-btn" type="button" id="btn-video">
-          Videollamada - S/ 40.00
-        </button>
-        <button class="pill-btn" type="button" id="btn-presencial">
-          Presencial - S/ 50.00
-        </button>
+        <button class="pill-btn" type="button" id="btn-chat-laura">Chat - S/ 20.00</button>
+        <button class="pill-btn" type="button" id="btn-video-laura">Videollamada - S/ 40.00</button>
+        <button class="pill-btn" type="button" id="btn-presencial-laura">Presencial - S/ 50.00</button>
       </div>
     </div>
 
-    <!-- Modal CV -->
-    <div class="modal-backdrop" id="cv-modal" style="display:none">
-      <div class="modal-card">
+    <!-- MODAL CV LAURA -->
+    <div class="cv-modal" id="cv-laura">
+      <div class="cv-card">
         <h2>Laura Anadin Romero</h2>
         <p class="text-muted">Abogada especialista en Derecho Civil y de Familia.</p>
 
         <h3>Formación académica</h3>
         <ul>
-          <li>Estudios de pregrado en Derecho – Universidad Privada San Juan Bautista (UPSJB), sede Chincha.</li>
-          <li>Ingreso: 2018 &nbsp;|&nbsp; Egresada: 2023.</li>
+          <li>Estudios de Derecho — Universidad Privada San Juan Bautista, sede Chincha.</li>
           <li>Profundización en Derecho Civil Patrimonial y Derecho de Familia.</li>
         </ul>
 
         <h3>Experiencia profesional</h3>
         <ul>
-          <li>Asesora legal en la Municipalidad Distrital de Nuevo Imperial en temas civiles.</li>
+          <li>Asesora legal en temas civiles en la Municipalidad de Nuevo Imperial.</li>
           <li>Elaboración y revisión de contratos de compraventa, arrendamiento y préstamos.</li>
-          <li>Acompañamiento en procesos de alimentos, tenencia y divorcio de mutuo acuerdo.</li>
+          <li>Procesos de alimentos, tenencia, divorcios y acuerdos de mutuo consentimiento.</li>
         </ul>
 
         <h3>Aptitudes</h3>
         <ul>
-          <li>Escucha activa y orientación a soluciones conciliadoras.</li>
+          <li>Escucha activa y orientación conciliadora.</li>
           <li>Redacción clara de contratos y actas de acuerdos.</li>
-          <li>Compromiso con la protección de la familia y el patrimonio de sus clientes.</li>
+          <li>Compromiso con la protección de las familias y el patrimonio.</li>
         </ul>
 
-        <p class="text-small">
-          WhatsApp: <strong>958 002 612</strong><br>
-          Correo: <strong>anadinromerolaura@gmail.com</strong><br>
-          Lugar de atención presencial: <strong>Calle Albilla N° 108, Urb. Las Viñas (Ex Toche), Chincha – Sede UPSJ.</strong>
-        </p>
+        <p><strong>WhatsApp:</strong> 958 002 612</p>
+        <p><strong>Correo:</strong> anadinromerolaura@gmail.com</p>
+        <p><strong>Lugar de atención presencial:</strong> Calle Albilla N° 108, Urb. Las Viñas (Ex Toche), Chincha – UPSJ.</p>
 
-        <button type="button" class="pill-btn" id="cv-close">Cerrar</button>
+        <p class="text-small text-muted">
+        </p>
       </div>
     </div>
-  </div>
 
-  ${TabBar('abogado')}
+    ${TabBar('abogado')}
+  </div>
   `;
 
   function onMount() {
-    const modal = document.getElementById('cv-modal');
-    const btnVerMas = document.getElementById('btn-ver-mas');
-    const btnCerrar = document.getElementById('cv-close');
+    const btnCV = document.getElementById('btn-laura-cv');
+    const modal = document.getElementById('cv-laura');
 
-    if (btnVerMas && modal) {
-      btnVerMas.style.cursor = 'pointer';
-      btnVerMas.addEventListener('click', () => {
-        modal.style.display = 'flex';
-      });
+    if (btnCV && modal) {
+      btnCV.addEventListener('click', () => modal.classList.add('open'));
+      modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
     }
 
-    if (btnCerrar && modal) {
-      btnCerrar.addEventListener('click', () => {
-        modal.style.display = 'none';
-      });
-    }
+    // Chat
+    document.getElementById('btn-chat-laura')?.addEventListener('click', () => {
+      window.open('https://wa.me/51958002612?text=Hola%20Doctora%20Laura,%20quisiera%20una%20consulta%20por%20chat.', '_blank');
+    });
 
-    if (modal) {
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) modal.style.display = 'none';
-      });
-    }
+    // Videollamada
+    document.getElementById('btn-video-laura')?.addEventListener('click', () => {
+      const asunto = encodeURIComponent('Solicitud de videollamada legal');
+      const cuerpo = encodeURIComponent(
+        'Hola Doctora Laura,\n\nDeseo agendar una videollamada legal.\n\n' +
+        '- Nombre completo:\n- Tema a tratar:\n- Horarios disponibles:\n'
+      );
+      window.location.href = `mailto:anadinromerolaura@gmail.com?subject=${asunto}&body=${cuerpo}`;
+    });
 
-    // CHAT – WhatsApp
-    const btnChat = document.getElementById('btn-chat');
-    if (btnChat) {
-      btnChat.addEventListener('click', () => {
-        const phone = '51958002612';
-        const message = encodeURIComponent(
-          'Hola doctora Laura, quisiera una consulta por chat desde la app LexDigital.'
-        );
-        window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
-      });
-    }
-
-    // VIDEOLLAMADA – correo
-    const btnVideo = document.getElementById('btn-video');
-    if (btnVideo) {
-      btnVideo.addEventListener('click', () => {
-        const to = 'anadinromerolaura@gmail.com';
-        const subject = encodeURIComponent('Solicitud de videollamada legal – LexDigital');
-        const body = encodeURIComponent(
-          `Estimada doctora Laura,\n\n` +
-          `Le escribo desde la aplicación LexDigital para solicitar una consulta por videollamada.\n\n` +
-          `Datos de referencia:\n` +
-          `- Nombre completo:\n` +
-          `- DNI:\n` +
-          `- Tema de la consulta civil/familiar:\n` +
-          `- Día y hora sugeridos:\n\n` +
-          `Quedo atento(a) a su confirmación y al enlace de Google Meet.\n\n` +
-          `Saludos cordiales.`
-        );
-        window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
-      });
-    }
-
-    // PRESENCIAL – correo
-    const btnPresencial = document.getElementById('btn-presencial');
-    if (btnPresencial) {
-      btnPresencial.addEventListener('click', () => {
-        const to = 'anadinromerolaura@gmail.com';
-        const subject = encodeURIComponent('Solicitud de cita presencial – LexDigital');
-        const body = encodeURIComponent(
-          `Estimada doctora Laura,\n\n` +
-          `Le escribo desde la aplicación LexDigital para solicitar una cita presencial.\n\n` +
-          `Lugar sugerido:\n` +
-          `Calle Albilla N° 108, Urb. Las Viñas (Ex Toche), Chincha – Sede UPSJ.\n\n` +
-          `Datos de referencia:\n` +
-          `- Nombre completo:\n` +
-          `- DNI:\n` +
-          `- Tema de la consulta civil/familiar:\n` +
-          `- Día y hora sugeridos:\n\n` +
-          `Quedo atento(a) a su confirmación.\n\n` +
-          `Saludos cordiales.`
-        );
-        window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
-      });
-    }
+    // Presencial
+    document.getElementById('btn-presencial-laura')?.addEventListener('click', () => {
+      const asunto = encodeURIComponent('Solicitud de cita presencial');
+      const cuerpo = encodeURIComponent(
+        'Hola Doctora Laura,\n\nQuisiera solicitar una cita presencial.\n\n' +
+        '- Nombre completo:\n- Tema a tratar:\n- Disponibilidad:\n'
+      );
+      window.location.href = `mailto:anadinromerolaura@gmail.com?subject=${asunto}&body=${cuerpo}`;
+    });
   }
 
   return { html, onMount };
 }
+
