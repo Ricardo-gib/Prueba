@@ -115,7 +115,7 @@ export default function Register() {
         try {
           // misma firma que usabas antes
           registerUser(fullName, userId, pwd, phone, email);
-          location.hash = '#/login';
+          location.hash = '#/home';
         } catch (err) {
           if (errorBox) {
             errorBox.textContent = err?.message || 'No se pudo crear la cuenta.';
@@ -127,7 +127,7 @@ export default function Register() {
 
     if (btnGoLogin) {
       btnGoLogin.addEventListener('click', () => {
-        location.hash = '#/login';
+        location.hash = '#/home';
       });
     }
 
