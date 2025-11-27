@@ -197,3 +197,21 @@ body { margin: 0; }
   box-shadow: 0 10px 24px rgba(14,44,71,.22);
 }
 
+.password-wrapper { 
+  display: flex; 
+  align-items: center; 
+  gap: 4px; 
+}
+
+.password-wrapper input { 
+  flex: 1; 
+}
+
+.password-toggle {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 4px 6px;
+  font-size: 14px;
+}
+
