@@ -1,88 +1,116 @@
-import { registerWithEmail, loginWithEmail, auth } from '../lib/firebase.js';
+// src/views/Register.js
+import { registerUser } from '../auth.js';
 
-export default function Register(){
-  const el = document.createElement('section');
-  el.className = 'container';
-  el.innerHTML = `
-    <div style="flex:1;display:grid;place-items:center">
-      <div class="card" style="max-width:520px;width:100%;text-align:left">
-        <h1>Crear cuenta</h1>
-        <p class="muted">Completa tus datos para registrarte</p>
+export default function Register() {
+  const html = `
+  <div class="screen">
+    <div class="app-card auth-card">
+      <h1>Crear cuenta</h1>
+      <p class="text-muted">
+        Regístrate con un ID, como en un videojuego, y úsalo para entrar.
+      </p>
 
-        <form id="frm" class="grid" style="gap:12px;margin-top:8px">
-          <label>Nombre completo
-            <input type="text" id="name" class="input" placeholder="Tu nombre" required />
-          </label>
-          <label>Edad
-            <input type="number" id="age" class="input" min="0" max="120" placeholder="18" />
-          </label>
-          <label>Correo
-            <input type="email" id="email" class="input" placeholder="tucorreo@gmail.com" required />
-          </label>
-          <label>Contraseña
-            <input type="password" id="pass" class="input" placeholder="Mínimo 6 caracteres" required />
-          </label>
+      <form id="register-form" class="form-vertical">
+        <label class="field">
+          <span>Nombre completo</span>
+          <input type="text" id="reg-fullname" required />
+        </label>
 
-          <button class="btn primary" type="submit" id="btnCreate">Crear cuenta</button>
-          <button class="btn" type="button" id="btnLogin">Ya tengo cuenta: Ingresar</button>
-          <a class="link-invite" href="#/home">Volver</a>
+        <label class="field">
+          <span>ID (usuario)</span>
+          <input type="text" id="reg-id" required />
+        </label>
 
-          <p class="muted" id="msg"></p>
-        </form>
-      </div>
+        <label class="field">
+          <span>Contraseña</span>
+          <input type="password" id="reg-password" required />
+        </label>
+
+        <label class="field">
+          <span>Número de celular</span>
+          <input type="tel" id="reg-phone" />
+        </label>
+
+        <label class="field">
+          <span>Correo electrónico</span>
+          <input type="email" id="reg-email" />
+        </label>
+
+        <button type="submit" class="primary-btn" style="margin-top:16px">
+          Crear cuenta
+        </button>
+
+        <p id="reg-error"
+           class="text-small"
+           style="color:#c0392b;margin-top:8px;display:none"></p>
+      </form>
+
+      <button type="button" class="ghost-btn" id="reg-go-login">
+        Ya tengo cuenta: Ingresar
+      </button>
+
+      <button type="button" class="link-btn" id="reg-go-home">
+        Volver al inicio
+      </button>
     </div>
+  </div>
   `;
 
-  const f = el.querySelector('#frm');
-  const msg = el.querySelector('#msg');
-  const btnCreate = el.querySelector('#btnCreate');
-  const btnLogin  = el.querySelector('#btnLogin');
+  function onMount() {
+    const form = document.getElementById('register-form');
+    const errorBox = document.getElementById('reg-error');
 
-  f.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const name  = el.querySelector('#name').value.trim();
-    const age   = el.querySelector('#age').value.trim();
-    const email = el.querySelector('#email').value.trim();
-    const pass  = el.querySelector('#pass').value;
+    const fnInput = document.getElementById('reg-fullname');
+    const idInput = document.getElementById('reg-id');
+    const passInput = document.getElementById('reg-password');
+    const phoneInput = document.getElementById('reg-phone');
+    const emailInput = document.getElementById('reg-email');
 
-    btnCreate.disabled = true;
-    btnCreate.textContent = 'Creando…';
-    msg.textContent = 'Registrando y enviando verificación…';
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        errorBox.style.display = 'none';
 
-    try {
-      const user = await registerWithEmail({ name, age, email, password: pass });
-      msg.textContent = `Cuenta creada. Te enviamos un correo de verificación a ${user.email}.`;
+        const data = {
+          fullname: fnInput.value.trim(),
+          id: idInput.value.trim(),
+          password: passInput.value,
+          phone: phoneInput.value.trim(),
+          email: emailInput.value.trim()
+        };
 
-      location.hash = '#/home';
-    } catch (err) {
-      console.error(err);
-      msg.textContent = 'No se pudo crear la cuenta: ' + (err?.message || err);
-    } finally {
-      btnCreate.disabled = false;
-      btnCreate.textContent = 'Crear cuenta';
+        if (!data.fullname || !data.id || !data.password) {
+          errorBox.textContent = 'Completa al menos nombre, ID y contraseña.';
+          errorBox.style.display = 'block';
+          return;
+        }
+
+        try {
+          // guarda usuario en localStorage y deja la sesión iniciada
+          registerUser(data);
+          // después de crear la cuenta, volver al Home
+          location.hash = '#/home';
+        } catch (err) {
+          errorBox.textContent = err.message || 'No se pudo registrar.';
+          errorBox.style.display = 'block';
+        }
+      });
     }
-  });
 
-  btnLogin.addEventListener('click', async () => {
-    const email = el.querySelector('#email').value.trim();
-    const pass  = el.querySelector('#pass').value;
-    if (!email || !pass){ msg.textContent = 'Completa correo y contraseña.'; return; }
-
-    btnLogin.disabled = true;
-    btnLogin.textContent = 'Ingresando…';
-    msg.textContent = 'Validando credenciales…';
-
-    try {
-      await loginWithEmail(email, pass);
-      location.hash = '#/home';
-    } catch (err) {
-      console.error(err);
-      msg.textContent = 'No se pudo iniciar sesión: ' + (err?.message || err);
-    } finally {
-      btnLogin.disabled = false;
-      btnLogin.textContent = 'Ya tengo cuenta: Ingresar';
+    const goLogin = document.getElementById('reg-go-login');
+    if (goLogin) {
+      goLogin.addEventListener('click', () => {
+        location.hash = '#/login';
+      });
     }
-  });
 
-  return el;
+    const goHome = document.getElementById('reg-go-home');
+    if (goHome) {
+      goHome.addEventListener('click', () => {
+        location.hash = '#/home';
+      });
+    }
+  }
+
+  return { html, onMount };
 }
