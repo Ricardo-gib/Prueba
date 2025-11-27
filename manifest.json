@@ -1,11 +1,11 @@
 {
   "name": "LexDigital",
   "short_name": "LexDigital",
-  "description": "Aplicación para gestionar abogados",
-  "start_url": "/index.html",
+  "start_url": "/Prueba/index.html",
+  "scope": "/Prueba/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#0f2f49",
+  "theme_color": "#003654",
   "icons": [
     {
       "src": "assets/icon_192.png",
