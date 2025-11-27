@@ -19,7 +19,7 @@ const routes = {
   'abogado': Abogado, '/abogado': Abogado,
   'contratos': Contratos, '/contratos': Contratos,
   'cursos': Cursos, '/cursos': Cursos,
-  'planes': Planes, '/planes': Planes,
+  'guias': GuiasDocumentos, '/guias': GuiasDocumentos,
   'dra-maylee': Maylee, '/dra-maylee': Maylee,
   'dra-laura': Laura, '/dra-laura': Laura,
   'dr-franklin': Franklin, '/dr-franklin': Franklin,
