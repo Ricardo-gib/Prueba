@@ -49,7 +49,6 @@ export default function Maylee() {
         <p><strong>Correo:</strong> mayleezamalloa3@gmail.com</p>
         <p><strong>Lugar de atención presencial:</strong> Calle Albilla N° 108, Urb. Las Viñas (Ex Toche), Chincha – Sede UPSJ.</p>
         <p class="text-small text-muted">
-          Para cerrar esta ventana toca fuera del recuadro o usa la flecha de regresar de tu celular.
         </p>
       </div>
     </div>
