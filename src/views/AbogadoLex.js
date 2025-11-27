@@ -17,7 +17,7 @@ export default function AbogadoLex() {
         <a class="pill-btn" href="#/abogado">Mi Abogado Legal</a>
         <a class="pill-btn" href="#/contratos">Contratos y Planillas</a>
         <a class="pill-btn" href="#/cursos">Cursos Legales</a>
-        <a class="pill-btn" href="#/planes">Planes y Precios</a>
+        <a class="pill-btn" href="#/guias">Guías y Documentos</a>
       </nav>
     </div>
   `;
