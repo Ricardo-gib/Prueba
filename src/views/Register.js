@@ -2,128 +2,141 @@
 import { registerUser } from '../auth.js';
 
 export default function Register() {
-  const el = document.createElement('section');
-  el.className = 'screen';
-
-  el.innerHTML = `
-    <div class="app-card" style="padding-top: 28px;">
-
-      <h1 class="app-title">Crear cuenta</h1>
-      <p class="text-muted" style="margin-bottom:18px;">
+  const html = `
+  <div class="screen">
+    <div class="app-card">
+      <h1 class="app-title" style="margin-bottom:4px;">Crear cuenta</h1>
+      <p class="text-muted">
         Completa correctamente todos los campos para poder registrarte.
       </p>
 
-      <form id="register-form" class="form-vertical">
+      <div class="menu-list" style="gap:10px; padding-top:4px;">
 
-        <!-- Nombre completo -->
         <label class="field">
           <span>Nombre completo</span>
-          <input class="login-input" type="text" id="reg-name" placeholder="Ej: Maylee Zamalloa">
+          <input class="login-input" id="reg-name" type="text" placeholder="Ej: Maylee Zamalloa" />
         </label>
 
-        <!-- ID -->
         <label class="field">
           <span>ID de usuario</span>
-          <input class="login-input" type="text" id="reg-id" placeholder="Ej: maylee123">
+          <input class="login-input" id="reg-id" type="text" placeholder="Ej: maylee123" />
         </label>
 
-        <!-- Contraseña -->
         <label class="field">
           <span>Contraseña</span>
           <div class="password-wrapper">
-            <input class="login-input" type="password" id="reg-password" />
-            <button type="button" class="password-toggle" id="toggle-reg-pass">👁</button>
+            <input class="login-input" id="reg-pass" type="password" placeholder="••••••••" />
+            <button type="button" class="password-toggle" id="reg-toggle-pass">👁</button>
           </div>
         </label>
 
-        <!-- Celular -->
         <label class="field">
           <span>Número de celular</span>
-          <input class="login-input" type="text" id="reg-phone" placeholder="9xxxxxxxx">
+          <input class="login-input" id="reg-phone" type="tel" placeholder="9xxxxxxxx" />
         </label>
 
-        <!-- Email -->
         <label class="field">
           <span>Correo electrónico</span>
-          <input class="login-input" type="email" id="reg-email" placeholder="tucorreo@gmail.com">
+          <input class="login-input" id="reg-email" type="email" placeholder="tucorreo@gmail.com" />
         </label>
 
-        <!-- CREAR CUENTA -->
-        <button type="submit" class="home-btn primary" style="margin-top:26px;">
+        <button type="button" class="home-btn primary" id="btn-register">
           Crear cuenta
         </button>
 
-        <!-- YA TENGO CUENTA -->
-        <a href="#/login" class="home-btn secondary" style="margin-top:12px;">
+        <button type="button" class="home-btn secondary" id="btn-go-login">
           Ya tengo cuenta: Ingresar
-        </a>
+        </button>
 
-        <!-- VOLVER -->
-        <button type="button" id="go-home" class="home-btn secondary" style="margin-top:12px;">
+        <button type="button" class="home-btn secondary" id="btn-go-home">
           Volver al inicio
         </button>
 
-        <p id="reg-error" class="text-small" 
-           style="color:#c0392b;display:none;margin-top:18px;text-align:center;">
-        </p>
-
-      </form>
+        <p id="reg-error"
+           class="text-small"
+           style="color:#c0392b;margin-top:4px;text-align:center;display:none;"></p>
+      </div>
     </div>
+  </div>
   `;
 
-  // -------- ELEMENTOS --------
-  const form   = el.querySelector('#register-form');
-  const error  = el.querySelector('#reg-error');
+  function onMount() {
+    const nameInput  = document.getElementById('reg-name');
+    const idInput    = document.getElementById('reg-id');
+    const passInput  = document.getElementById('reg-pass');
+    const phoneInput = document.getElementById('reg-phone');
+    const emailInput = document.getElementById('reg-email');
 
-  const nameInput  = el.querySelector('#reg-name');
-  const idInput    = el.querySelector('#reg-id');
-  const passInput  = el.querySelector('#reg-password');
-  const phoneInput = el.querySelector('#reg-phone');
-  const emailInput = el.querySelector('#reg-email');
+    const togglePass = document.getElementById('reg-toggle-pass');
+    const btnRegister = document.getElementById('btn-register');
+    const btnGoLogin  = document.getElementById('btn-go-login');
+    const btnGoHome   = document.getElementById('btn-go-home');
+    const errorBox    = document.getElementById('reg-error');
 
-  const togglePass = el.querySelector('#toggle-reg-pass');
+    // helper para evitar el error de trim
+    const safeTrim = (el) => (el && el.value ? el.value.trim() : '');
 
-  // -------- OJO PARA CONTRASEÑA --------
-  togglePass.addEventListener('click', () => {
-    if (passInput.type === 'password') {
-      passInput.type = 'text';
-      togglePass.textContent = '🙈';
-    } else {
-      passInput.type = 'password';
-      togglePass.textContent = '👁';
-    }
-  });
-
-  // -------- REGISTRAR --------
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    error.style.display = 'none';
-
-    const name  = nameInput.value.trim();
-    const id    = idInput.value.trim();
-    const pwd   = passInput.value.trim();
-    const phone = phoneInput.value.trim();
-    const email = emailInput.value.trim();
-
-    if (!name || !id || !pwd || !phone || !email) {
-      error.textContent = "Por favor completa todos los campos.";
-      error.style.display = 'block';
-      return;
+    // ojo contraseña
+    if (togglePass && passInput) {
+      togglePass.addEventListener('click', () => {
+        if (passInput.type === 'password') {
+          passInput.type = 'text';
+          togglePass.textContent = '🙈';
+        } else {
+          passInput.type = 'password';
+          togglePass.textContent = '👁';
+        }
+      });
     }
 
-    try {
-      registerUser(name, id, pwd, phone, email);
-      location.hash = '#/login';
-    } catch (err) {
-      error.textContent = err.message || "Error al registrar.";
-      error.style.display = 'block';
+    // crear cuenta
+    if (btnRegister) {
+      btnRegister.addEventListener('click', () => {
+        if (errorBox) {
+          errorBox.style.display = 'none';
+          errorBox.textContent = '';
+        }
+
+        const fullName = safeTrim(nameInput);
+        const userId   = safeTrim(idInput);
+        const pwd      = safeTrim(passInput);
+        const phone    = safeTrim(phoneInput);
+        const email    = safeTrim(emailInput);
+
+        // validaciones simples
+        if (!fullName || !userId || !pwd || !phone || !email) {
+          if (errorBox) {
+            errorBox.textContent = 'Completa todos los campos antes de continuar.';
+            errorBox.style.display = 'block';
+          }
+          return;
+        }
+
+        try {
+          // misma firma que usabas antes
+          registerUser(fullName, userId, pwd, phone, email);
+          location.hash = '#/login';
+        } catch (err) {
+          if (errorBox) {
+            errorBox.textContent = err?.message || 'No se pudo crear la cuenta.';
+            errorBox.style.display = 'block';
+          }
+        }
+      });
     }
-  });
 
-  // -------- VOLVER --------
-  el.querySelector('#go-home').addEventListener('click', () => {
-    location.hash = '#/home';
-  });
+    if (btnGoLogin) {
+      btnGoLogin.addEventListener('click', () => {
+        location.hash = '#/login';
+      });
+    }
 
-  return el;
+    if (btnGoHome) {
+      btnGoHome.addEventListener('click', () => {
+        location.hash = '#/home';
+      });
+    }
+  }
+
+  return { html, onMount };
 }
