@@ -5,18 +5,31 @@ export default function Login() {
   const html = `
   <div class="screen">
     <div class="app-card auth-card">
-      <h1>Ingresar</h1>
-      <p class="text-muted">Accede con tu ID y contraseña.</p>
+      <h1>Identificación</h1>
+      <p class="text-muted">
+        Ingresa con tu <strong>ID</strong> y contraseña, como en un videojuego.
+      </p>
 
       <form id="login-form" class="form-vertical">
         <label class="field">
-          <span>ID</span>
-          <input type="text" id="login-id" autocomplete="username" required />
+          <span>ID (usuario)</span>
+          <input
+            type="text"
+            id="login-id"
+            autocomplete="username"
+            placeholder="Ejemplo: ricard0"
+            required
+          />
         </label>
 
         <label class="field">
           <span>Contraseña</span>
-          <input type="password" id="login-password" autocomplete="current-password" required />
+          <input
+            type="password"
+            id="login-password"
+            autocomplete="current-password"
+            required
+          />
         </label>
 
         <button type="submit" class="primary-btn" style="margin-top:16px">
@@ -29,7 +42,15 @@ export default function Login() {
       </form>
 
       <button type="button" class="ghost-btn" id="go-register">
-        Crear una nueva cuenta
+        Registrarme
+      </button>
+
+      <button type="button" class="ghost-btn" id="go-guest">
+        Acceder como invitado
+      </button>
+
+      <button type="button" class="link-btn" id="forgot-pass">
+        ¿Olvidaste tu contraseña?
       </button>
 
       <button type="button" class="link-btn" id="go-home">
@@ -60,9 +81,9 @@ export default function Login() {
         }
 
         try {
-          // si es correcto, guarda la sesión (dentro de loginUser) y redirige
+          // Si es correcto, loginUser lanza OK y guarda sesión
           loginUser(id, pwd);
-          // aquí eliges a dónde ir cuando se loguea (puedes cambiar la ruta)
+          // Después de iniciar sesión, lo mandamos al menú principal de la app
           location.hash = '#/abogadolex';
         } catch (err) {
           errorBox.textContent = err.message || 'ID o contraseña incorrectos.';
@@ -75,6 +96,21 @@ export default function Login() {
     if (goReg) {
       goReg.addEventListener('click', () => {
         location.hash = '#/register';
+      });
+    }
+
+    const goGuest = document.getElementById('go-guest');
+    if (goGuest) {
+      goGuest.addEventListener('click', () => {
+        // invitado entra directo al menú principal
+        location.hash = '#/abogadolex';
+      });
+    }
+
+    const forgot = document.getElementById('forgot-pass');
+    if (forgot) {
+      forgot.addEventListener('click', () => {
+        alert('Recuperación de contraseña: próximamente en LexDigital 😉');
       });
     }
 
