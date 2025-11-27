@@ -215,3 +215,53 @@ body { margin: 0; }
   font-size: 14px;
 }
 
+/* ===== Modal CV abogados (ventana emergente) ===== */
+.cv-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 999;
+}
+
+.cv-modal.open {
+  display: flex;
+}
+
+.cv-card {
+  background: #ffffff;
+  border-radius: 22px;
+  max-width: 720px;
+  width: 100%;
+  max-height: 90vh;
+  padding: 24px 22px 20px;
+  overflow-y: auto;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+}
+
+.cv-card h2 {
+  margin-top: 0;
+  margin-bottom: 4px;
+}
+
+.cv-card h3 {
+  margin-top: 18px;
+  margin-bottom: 6px;
+}
+
+.cv-card ul {
+  padding-left: 20px;
+  margin-top: 0;
+}
+
+.cv-card p {
+  margin: 4px 0;
+}
+
+.cv-card .text-small {
+  margin-top: 10px;
+}
+
