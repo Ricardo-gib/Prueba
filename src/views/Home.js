@@ -1,48 +1,121 @@
-import { signInWithGoogle, handleRedirectResult, auth } from '../lib/firebase.js';
+// src/views/Home.js
+import { loginUser } from '../auth.js';
 
 export default function Home() {
-  const el = document.createElement('section');
-  el.className = 'welcome-hero';
+  const html = `
+  <section class="screen full-screen">
+    <div class="app-card full-card">
+      <header class="app-hero">
+        <div class="avatar large" aria-hidden="true">
+          <img src="assets/icon_1024.png?v=36" alt="Logo LexDigital" />
+        </div>
+        <h1 class="app-title">
+          <span>Lex</span>Digital
+        </h1>
+        <p class="text-muted">
+          Asesoría legal al instante, confiable y a tu alcance.
+        </p>
+      </header>
 
-  el.innerHTML = `
-    <header class="hero-top">
-      <div class="hero-logo"
-           style="background-image:url('assets/icon_512.png?v=23')"
-           role="img" aria-label="LexDigital"></div>
-      <h1 class="brand"><span class="lex">Lex</span><span class="accent">Digital</span></h1>
-      <p class="tagline">Asesoría legal al instante, confiable y a tu alcance.</p>
-    </header>
+      <div class="auth-card">
+        <h2 style="margin-bottom:8px">Identificación</h2>
+        <p class="text-small" style="margin-bottom:16px">
+          Ingresa con tu ID y contraseña para acceder a LexDigital.
+        </p>
 
-    <div class="hero-card">
-      <button class="btn primary" type="button" id="googleNow">Acceder con correo</button>
-      <a class="btn" href="#/register">Registrarme</a>
-      <a class="link-invite" href="#/abogadolex">Acceder como invitado</a>
-      <p class="muted" id="msg" style="margin-top:8px"></p>
+        <form id="home-login-form" class="form-vertical">
+          <label class="field">
+            <span>ID</span>
+            <input type="text" id="home-login-id" autocomplete="username" required />
+          </label>
+
+          <label class="field field-password">
+            <span>Contraseña</span>
+            <div class="password-wrapper">
+              <input type="password" id="home-login-password"
+                     autocomplete="current-password" required />
+              <button type="button" id="home-toggle-password"
+                      class="password-toggle" aria-label="Mostrar u ocultar contraseña">
+                👁
+              </button>
+            </div>
+          </label>
+
+          <label class="field checkbox-field">
+            <input type="checkbox" id="home-remember" />
+            <span>Recordar mis datos</span>
+          </label>
+
+          <button type="submit" class="primary-btn" style="margin-top:12px">
+            Acceder
+          </button>
+
+          <button type="button" class="ghost-btn" id="home-go-register"
+                  style="margin-top:8px">
+            Registrarme
+          </button>
+
+          <p id="home-login-error"
+             class="text-small"
+             style="color:#c0392b;margin-top:8px;display:none"></p>
+        </form>
+      </div>
     </div>
+  </section>
   `;
 
-  const btn = el.querySelector('#googleNow');
-  const msg = el.querySelector('#msg');
+  function onMount() {
+    const form       = document.getElementById('home-login-form');
+    const idInput    = document.getElementById('home-login-id');
+    const pwdInput   = document.getElementById('home-login-password');
+    const rememberCb = document.getElementById('home-remember');
+    const errorBox   = document.getElementById('home-login-error');
+    const toggleBtn  = document.getElementById('home-toggle-password');
+    const goRegister = document.getElementById('home-go-register');
 
-  btn?.addEventListener('click', async () => {
-    try {
-      btn.disabled = true;
-      btn.textContent = 'Abriendo Google…';
-      msg.textContent = 'Redirigiendo a Google…';
-      await signInWithGoogle(); 
-    } catch (e) {
-      console.error('[GoogleSignIn]', e);
-      btn.disabled = false;
-      btn.textContent = 'Acceder con correo';
-      msg.textContent = 'No se pudo abrir Google.';
+    // Toggle de contraseña
+    if (toggleBtn && pwdInput) {
+      toggleBtn.addEventListener('click', () => {
+        const isHidden = pwdInput.type === 'password';
+        pwdInput.type = isHidden ? 'text' : 'password';
+        toggleBtn.textContent = isHidden ? '🙈' : '👁';
+      });
     }
-  });
 
-  handleRedirectResult().then(() => {
-    if (auth.currentUser) {
-      location.hash = '#/home';
+    // Enviar login
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        errorBox.style.display = 'none';
+
+        const id  = idInput.value.trim();
+        const pwd = pwdInput.value;
+        const remember = !!rememberCb.checked;
+
+        if (!id || !pwd) {
+          errorBox.textContent = 'Ingresa tu ID y contraseña.';
+          errorBox.style.display = 'block';
+          return;
+        }
+
+        try {
+          loginUser(id, pwd, remember);  // la lógica está en auth.js
+          location.hash = '#/abogadolex';
+        } catch (err) {
+          errorBox.textContent = err.message || 'ID o contraseña incorrectos.';
+          errorBox.style.display = 'block';
+        }
+      });
     }
-  });
 
-  return el;
+    // Ir a registro
+    if (goRegister) {
+      goRegister.addEventListener('click', () => {
+        location.hash = '#/register';
+      });
+    }
+  }
+
+  return { html, onMount };
 }
+
