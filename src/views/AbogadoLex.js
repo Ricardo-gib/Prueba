@@ -54,6 +54,11 @@ export default function AbogadoLex() {
   btnOpen.addEventListener('click', () => {
     chatContainer.classList.toggle('chatbot-hidden');
   });
+  
+// Inicializar chatbot igual que en Home
+setTimeout(() => {
+  initChatBot();
+}, 0);
 
   return el;
 }
