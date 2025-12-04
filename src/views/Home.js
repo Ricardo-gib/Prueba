@@ -1,6 +1,5 @@
 // src/views/Home.js
 import { loginUser } from '../auth.js';
-import ChatBot, { initChatBot } from '../components/ChatBot.js';
 
 export default function Home() {
   const el = document.createElement('section');
