@@ -1,4 +1,4 @@
-import ChatBot, { initChatBot } from '../components/ChatBot.js';
+// src/views/AbogadoLex.js
 
 export default function AbogadoLex() {
   const el = document.createElement('section');
@@ -21,31 +21,9 @@ export default function AbogadoLex() {
         <a class="pill-btn" href="#/cursos">Cursos Legales</a>
         <a class="pill-btn" href="#/guias">Guías y Documentos</a>
       </nav>
-
-      <div style="margin-top:20px;text-align:center;">
-        <button id="abrirBot" class="pill-btn">
-          💬 Hablar con LexBot
-        </button>
-      </div>
     </div>
   `;
 
-  // Igual que antes en Home
-  setTimeout(() => {
-    initChatBot();
-  }, 0);
-
-  // mostrar/ocultar la ventana del bot
-  setTimeout(() => {
-    const toggleBtn = document.getElementById('abrirBot');
-    const botWindow = document.querySelector('.lexbot-window');
-
-    if (toggleBtn && botWindow) {
-      toggleBtn.addEventListener('click', () => {
-        botWindow.classList.toggle('open');
-      });
-    }
-  }, 200);
-
   return el;
 }
+
