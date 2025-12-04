@@ -488,3 +488,10 @@ input[type="password"].login-input {
     width: auto;
   }
 }
+
+.lexbot {
+  position: fixed;
+  bottom: 88px;
+  right: 18px;
+  z-index: 900;
+}
