@@ -1,3 +1,4 @@
+import ChatBot, { initChatBot } from '../components/ChatBot.js';
 export default function AbogadoLex() { 
   const el = document.createElement('section');
   el.className = 'screen full-screen';
