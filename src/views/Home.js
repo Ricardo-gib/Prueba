@@ -104,11 +104,3 @@ export default function Home() {
       location.hash = '#/register';
     });
   }
-
-  // Inicializar el chatbot después de pintar el HTML
-  setTimeout(() => {
-    initChatBot();
-  }, 0);
-
-  return el;
-}
