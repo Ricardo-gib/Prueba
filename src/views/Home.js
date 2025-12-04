@@ -42,8 +42,6 @@ export default function Home() {
 
       <p id="home-msg" class="text-small" style="margin-top:6px;color:#c0392b;display:none;"></p>
     </div>
-
-    ${ChatBot()}
   `;
 
   const idInput     = el.querySelector('#home-id');
@@ -87,7 +85,7 @@ export default function Home() {
 
       try {
         loginUser(id, pwd);
-        // Después de loguear → va al menú principal de abogado
+        // Después de loguear → va al menú principal
         location.hash = '#/abogadolex';
       } catch (err) {
         if (msgBox) {
@@ -104,7 +102,6 @@ export default function Home() {
       location.hash = '#/register';
     });
   }
-  
+
   return el;
 }
-
