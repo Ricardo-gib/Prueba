@@ -104,3 +104,7 @@ export default function Home() {
       location.hash = '#/register';
     });
   }
+  
+  return el;
+}
+
