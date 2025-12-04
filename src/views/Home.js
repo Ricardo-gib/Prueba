@@ -1,5 +1,6 @@
 // src/views/Home.js
 import { loginUser } from '../auth.js';
+import ChatBot, { initChatBot } from '../components/ChatBot.js';
 
 export default function Home() {
   const el = document.createElement('section');
@@ -15,73 +16,100 @@ export default function Home() {
         <span class="lex">Lex</span><span class="accent">Digital</span>
       </h1>
 
-      <p class="tagline">Asesoría legal al instante, confiable y a tu alcance.</p>
+      <p class="tagline">
+        Asesoría legal al instante, confiable y a tu alcance.
+      </p>
     </header>
 
     <div class="hero-card">
+      <label class="field">
+        <span>ID</span>
+        <input class="login-input" type="text" id="home-id" autocomplete="username" />
+      </label>
 
-      <label>ID</label>
-      <input class="login-input" type="text" id="login-id">
+      <label class="field">
+        <span>Contraseña</span>
+        <div class="password-wrapper">
+          <input class="login-input" type="password" id="home-password" autocomplete="current-password" />
+          <button type="button" class="password-toggle" id="home-toggle">👁</button>
+        </div>
+      </label>
 
-      <label>Contraseña</label>
-      <div class="password-wrapper">
-        <input class="login-input" type="password" id="login-password">
-        <button type="button" class="password-toggle" id="toggle-pass">👁</button>
-      </div>
+      <button class="home-btn primary" id="home-access">Acceder</button>
+      <button class="home-btn secondary" id="home-register">Registrarme</button>
 
-      <!-- BOTÓN ACCEDER -->
-      <button class="home-btn primary" id="accessNow">Acceder</button>
-
-      <!-- REGISTRARME -->
-      <a class="home-btn secondary" href="#/register">Registrarme</a>
-
-      <!-- OLVIDASTE -->
       <a class="link-invite" href="#/forgot">¿Olvidaste tu contraseña?</a>
-
-      <!-- INVITADO -->
       <a class="link-invite" href="#/abogadolex">Acceder como invitado</a>
 
-      <p id="msg" class="muted" style="margin-top:8px"></p>
+      <p id="home-msg" class="text-small" style="margin-top:6px;color:#c0392b;display:none;"></p>
     </div>
+
+    ${ChatBot()}
   `;
 
-  // --- REFERENCIAS ---
-  const idInput = el.querySelector('#login-id');
-  const passInput = el.querySelector('#login-password');
-  const toggle = el.querySelector('#toggle-pass');
-  const btnAccess = el.querySelector('#accessNow');
-  const msg = el.querySelector('#msg');
+  const idInput     = el.querySelector('#home-id');
+  const passInput   = el.querySelector('#home-password');
+  const togglePass  = el.querySelector('#home-toggle');
+  const btnAccess   = el.querySelector('#home-access');
+  const btnRegister = el.querySelector('#home-register');
+  const msgBox      = el.querySelector('#home-msg');
 
-  // --- MOSTRAR / OCULTAR CONTRASEÑA ---
-  toggle.addEventListener('click', () => {
-    if (passInput.type === 'password') {
-      passInput.type = 'text';
-      toggle.textContent = '🙈';
-    } else {
-      passInput.type = 'password';
-      toggle.textContent = '👁';
-    }
-  });
+  // Mostrar / ocultar contraseña
+  if (togglePass && passInput) {
+    togglePass.addEventListener('click', () => {
+      if (passInput.type === 'password') {
+        passInput.type = 'text';
+        togglePass.textContent = '🙈';
+      } else {
+        passInput.type = 'password';
+        togglePass.textContent = '👁';
+      }
+    });
+  }
 
-  // --- ACCEDER ---
-  btnAccess.addEventListener('click', () => {
-    const id = idInput.value.trim();
-    const pwd = passInput.value.trim();
+  // Acceder
+  if (btnAccess) {
+    btnAccess.addEventListener('click', () => {
+      if (msgBox) {
+        msgBox.style.display = 'none';
+        msgBox.textContent = '';
+      }
 
-    if (!id || !pwd) {
-      msg.textContent = "Completa ambos campos.";
-      return;
-    }
+      const id  = idInput?.value.trim();
+      const pwd = passInput?.value.trim();
 
-    try {
-      loginUser(id, pwd);
-      location.hash = '#/abogadolex';
-    } catch (e) {
-      msg.textContent = "ID o contraseña incorrectos.";
-    }
-  });
+      if (!id || !pwd) {
+        if (msgBox) {
+          msgBox.textContent = 'Ingresa tu ID y contraseña.';
+          msgBox.style.display = 'block';
+        }
+        return;
+      }
+
+      try {
+        loginUser(id, pwd);
+        // Después de loguear → va al menú principal de abogado
+        location.hash = '#/abogadolex';
+      } catch (err) {
+        if (msgBox) {
+          msgBox.textContent = err?.message || 'ID o contraseña incorrectos.';
+          msgBox.style.display = 'block';
+        }
+      }
+    });
+  }
+
+  // Ir a registro
+  if (btnRegister) {
+    btnRegister.addEventListener('click', () => {
+      location.hash = '#/register';
+    });
+  }
+
+  // Inicializar el chatbot después de pintar el HTML
+  setTimeout(() => {
+    initChatBot();
+  }, 0);
 
   return el;
 }
-
-
